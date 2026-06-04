@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { MouseEventHandler, ReactNode, useEffect, useState } from "react";
 import { ButtonMenu, ButtonMenuItem } from "@components/ui/ButtonMenu";
-import { Values } from "@consts/ActivitiesFilter";
 import { useRouter } from "next/navigation";
 import { CarFrontIcon } from "lucide-react";
 import { useCookie } from "../hooks/useCookie";
@@ -193,13 +192,18 @@ export const Drawer = ({
                   </div>
                 }
               >
-                {Object.keys(Values).map((k) => (
+                <ButtonMenuItem
+                  key="temp"
+                  label="Temp"
+                  onClick={() => handleFilter("")}
+                />
+                {/*Object.keys(Values).map((k) => (
                   <ButtonMenuItem
                     key={k}
                     label={Values[k]}
                     onClick={() => handleFilter(k)}
                   />
-                ))}
+                ))*/}
               </ButtonMenu>
             </div>
           )}

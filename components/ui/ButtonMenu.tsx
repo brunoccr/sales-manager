@@ -33,7 +33,7 @@ export function ButtonMenu({
   children,
 }: {
   content: ReactNode;
-  children: ReactNode[];
+  children: ReactNode | ReactNode[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
