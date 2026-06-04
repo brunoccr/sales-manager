@@ -1,0 +1,106 @@
+import { useEffect, useState } from "react";
+
+export const InputField = ({
+  label,
+  name,
+  loading = false,
+  className = "",
+  variant = "text",
+  min = "0",
+  step = "0.01",
+  required = false,
+  tabIndex = 1,
+  placeholder = "",
+  onChange = () => {},
+  options,
+  value,
+}: {
+  label: string;
+  name: string;
+  className?: string;
+  loading?: boolean;
+  variant?: string;
+  min?: string;
+  step?: string;
+  required?: boolean;
+  tabIndex?: number;
+  placeholder?: string;
+  onChange?: (value: string) => void;
+  options?: { label: string; value: string }[];
+  value?: string;
+}) => {
+  const treatedValue =
+    value == null || variant === "date" ? value?.split(" ")[0] : value;
+
+  const [state, setState] = useState<string | undefined>("");
+
+  useEffect(() => {
+    (async () => {
+      setState(treatedValue);
+    })();
+  }, [treatedValue]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState(event.target.value);
+    onChange(event.target.value);
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setState(event.target.value);
+    onChange(event.target.value);
+  };
+
+  return (
+    <div className="w-full">
+      <label
+        htmlFor={name}
+        className="block text-sm/6 font-medium text-gray-100"
+      >
+        {label}
+      </label>
+      <div className="mt-2">
+        {!loading ? (
+          <>
+            {variant == "combo" && options?.length ? (
+              <select
+                id={name}
+                name={name}
+                value={state ?? ""}
+                onChange={handleSelectChange}
+                className={`${className} block w-full rounded-md bg-white/5 px-3 py-2 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6`}
+              >
+                {options &&
+                  options.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <input
+                tabIndex={tabIndex}
+                type={variant}
+                id={name}
+                name={name}
+                onChange={handleChange}
+                placeholder={placeholder}
+                required={required}
+                min={min}
+                step={step}
+                value={state ?? ""}
+                className={`${className} block ${variant != "checkbox" ? "w-full" : "mt-4 size-5"} rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6`}
+              />
+            )}
+          </>
+        ) : (
+          <div
+            role="status"
+            className="flex flex-1 items-center p-3 h-8 bg-[#1e2024] rounded-base rounded-lg gap-3 animate-pulse"
+          >
+            <span className="sr-only">Loading...</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
