@@ -29,6 +29,14 @@ export async function createServerClient() {
         maxAge,
         path: "/",
       });
+
+      cookieStore.set("username", pb.authStore.record?.name, {
+        httpOnly: false,
+        secure: true,
+        sameSite: "lax",
+        maxAge,
+        path: "/",
+      });
     }
   });
 

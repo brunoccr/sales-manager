@@ -13,12 +13,14 @@ export const formatNumber = (
   }).format(value);
 };
 
-export const formatDate = (value: string) => {
-  const refDate = new Date(value);
-
-  const strDay = refDate.getDate().toString().padStart(2, "0");
-  const strMonth = (refDate.getMonth() + 1).toString().padStart(2, "0");
-  const strYear = refDate.getFullYear();
+export const formatDate = (value: Date) => {
+  const strDay = value.getDate().toString().padStart(2, "0");
+  const strMonth = (value.getMonth() + 1).toString().padStart(2, "0");
+  const strYear = value.getFullYear();
 
   return `${strDay}/${strMonth}/${strYear}`;
+};
+
+export const formatDateString = (value: string) => {
+  return formatDate(new Date(value));
 };

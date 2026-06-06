@@ -19,7 +19,7 @@ export default function Login() {
     showLoading("Processando", async () => {
       const result = await login(formData);
 
-      if (result?.error) {
+      if (result.error) {
         setError(result.error);
         setTimeout(() => {
           setError(null);
@@ -55,7 +55,7 @@ export default function Login() {
             className="mx-auto h-28 w-auto"
           ></Image>
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
-            Car Manager
+            Sales Manager
           </h2>
         </div>
 

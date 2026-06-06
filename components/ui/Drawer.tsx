@@ -2,26 +2,16 @@
 
 import Image from "next/image";
 import { MouseEventHandler, ReactNode, useEffect, useState } from "react";
-import { ButtonMenu, ButtonMenuItem } from "@components/ui/ButtonMenu";
 import { useRouter } from "next/navigation";
-import { CarFrontIcon } from "lucide-react";
 import { useCookie } from "../hooks/useCookie";
-
-export interface Vehicle {
-  id: string;
-  name: string;
-}
+import { ArrowLeftIcon } from "lucide-react";
 
 export interface DrawerProps {
   title: string;
   subtitle?: string;
-  username: string;
-  showFilter?: boolean;
-  showFilterCar?: boolean;
-  vehicles?: Vehicle[];
-  onFilterChange?: (filter: string) => void;
-  onVehicleChange?: (carId: string) => void;
+  showBack: boolean;
   children: ReactNode | ReactNode[];
+  menu?: ReactNode;
 }
 
 export interface DrawerItemProps {
@@ -67,23 +57,20 @@ export const DrawerItem = ({
 export const Drawer = ({
   title,
   subtitle,
-  username = "[USERNAME]",
+  showBack = false,
   children,
-  showFilter = true,
-  showFilterCar = true,
-  vehicles = [],
-  onFilterChange = () => {},
-  onVehicleChange = () => {},
+  menu,
 }: DrawerProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [carFilter, setCarFilter] = useCookie("car_filter", "all");
-
   const router = useRouter();
-
-  const selectedFilter = vehicles.find((v) => v.id === carFilter)?.name;
+  const [username] = useCookie("username");
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleBack = () => {
+    window.location.href = window.history.state.prevUrl;
   };
 
   useEffect(() => {
@@ -100,7 +87,7 @@ export const Drawer = ({
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [isOpen]);
+  }, [isOpen, showBack]);
 
   const closeMenu = () => {
     if (isOpen) {
@@ -108,41 +95,35 @@ export const Drawer = ({
     }
   };
 
-  const handleFilter = (filter: string) => {
-    if (onFilterChange) {
-      onFilterChange(filter);
-    }
-
-    router.refresh();
-  };
-
-  const handleCarChange = (carId: string) => {
-    setCarFilter(carId);
-
-    router.refresh();
-  };
-
   return (
     <nav className="flex bg-white text-black dark:bg-[#111318] h-14 dark:text-white p-2 pr-5 pl-5 border-b border-b-gray-800 fixed w-full z-50 ">
       <div className="flex justify-between items-center w-full">
         <div className="flex items-center gap-4 w-full">
+          {/******** Botão Voltar *******/}
+          {showBack && (
+            <div>
+              <ArrowLeftIcon onClick={handleBack} />
+            </div>
+          )}
           {/******** Menu Hamburguer *******/}
-          <div>
-            <button
-              onClick={isOpen ? closeMenu : toggleMenu}
-              className="flex flex-col justify-center items-center w-8 h-8 space-y-1 focus:outline-none z-50 relative"
-            >
-              <span
-                className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}
-              ></span>
-              <span
-                className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "opacity-0" : "opacity-100"}`}
-              ></span>
-              <span
-                className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
-              ></span>
-            </button>
-          </div>
+          {!showBack && (
+            <div>
+              <button
+                onClick={isOpen ? closeMenu : toggleMenu}
+                className="flex flex-col justify-center items-center w-8 h-8 space-y-1 focus:outline-none z-50 relative"
+              >
+                <span
+                  className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}
+                ></span>
+                <span
+                  className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "opacity-0" : "opacity-100"}`}
+                ></span>
+                <span
+                  className={`block w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
+                ></span>
+              </button>
+            </div>
+          )}
           {/******** Título e Subtítulo *******/}
           <div className="flex-1 flex flex-col">
             <span className={`font-bold ${subtitle ? "text-base" : "text-xl"}`}>
@@ -154,59 +135,8 @@ export const Drawer = ({
               {subtitle}
             </span>
           </div>
-          {/******** Filtro de Veículo *******/}
-          {showFilterCar && vehicles.length > 1 && (
-            <div className="flex items-center gap-5">
-              {carFilter !== "all" && <div>{selectedFilter}</div>}
-              <ButtonMenu
-                content={
-                  <div className="flex flex-col justify-center items-center w-8 h-8 space-y-1 focus:outline-none relative">
-                    <CarFrontIcon />
-                  </div>
-                }
-              >
-                <ButtonMenuItem
-                  key="all"
-                  label="Todos"
-                  onClick={() => handleCarChange("all")}
-                />
-                {vehicles.map((v) => (
-                  <ButtonMenuItem
-                    key={v.id}
-                    label={v.name}
-                    onClick={() => handleCarChange(v.id)}
-                  />
-                ))}
-              </ButtonMenu>
-            </div>
-          )}
-          {/******** Filtro *******/}
-          {showFilter && (
-            <div>
-              <ButtonMenu
-                content={
-                  <div className="flex flex-col justify-center items-center w-8 h-8 space-y-1 focus:outline-none relative">
-                    <span className="block w-5 h-0.5 bg-white"></span>
-                    <span className="block w-3 h-0.5 bg-white"></span>
-                    <span className="block w-1 h-0.5 bg-white"></span>
-                  </div>
-                }
-              >
-                <ButtonMenuItem
-                  key="temp"
-                  label="Temp"
-                  onClick={() => handleFilter("")}
-                />
-                {/*Object.keys(Values).map((k) => (
-                  <ButtonMenuItem
-                    key={k}
-                    label={Values[k]}
-                    onClick={() => handleFilter(k)}
-                  />
-                ))*/}
-              </ButtonMenu>
-            </div>
-          )}
+          {/******** Menu *******/}
+          {menu && <div>{menu}</div>}
         </div>
       </div>
       {isOpen && (

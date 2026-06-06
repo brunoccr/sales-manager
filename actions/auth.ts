@@ -91,7 +91,7 @@ export async function login(formData: FormData) {
     return { error: "Usuário ou Senha inválidos!" };
   }
 
-  redirect("/dashboard");
+  redirect("/home");
 }
 
 export async function logout() {
@@ -100,6 +100,7 @@ export async function logout() {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("pb_auth");
+    cookieStore.delete("username");
     pb.authStore.clear();
   } catch {
     return { error: "Credenciais inválidas" };

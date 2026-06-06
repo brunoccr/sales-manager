@@ -25,19 +25,12 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isLoggedIn && (isAuthPage || isRootPage)) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/login",
-    "/dashboard/:path*",
-    "/activities/:path*",
-    "/garage/:path*",
-    "/api/:path*",
-  ],
+  matcher: ["/", "/login", "/home/:path*", "/api/:path*"],
 };

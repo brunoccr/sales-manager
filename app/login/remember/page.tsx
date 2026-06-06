@@ -46,7 +46,7 @@ export default function Remember() {
           className="mx-auto h-28 w-auto"
         ></Image>
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">
-          Car Manager
+          Sales Manager
         </h2>
       </div>
 

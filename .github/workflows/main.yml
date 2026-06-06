@@ -46,7 +46,7 @@ jobs:
 
           git clone https://${{ secrets.CI }}@github.com/brunoccr/ha-addons.git
           cd ha-addons
-          cd car-manager
+          cd sales-manager
 
           jq '.version = "${{ github.event.release.tag_name }}"' config.json > tmp.json && mv tmp.json config.json
 
